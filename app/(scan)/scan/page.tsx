@@ -1,7 +1,9 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { InfoIcon } from "lucide-react";
 import { useState } from "react";
 
-export default function Home() {
+export default function Page() {
   const [labels, setLabels] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -22,17 +24,27 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>Image Label Detection</h1>
-      <button onClick={fetchLabels} disabled={loading}>
-        {loading ? "Loading..." : "Fetch Labels"}
-      </button>
+    <div className="w-full p-10 flex items-center justify-center">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl text-center">From Image</h1>
+          <Button variant="outline" size="icon">
+            <InfoIcon />
+          </Button>
+        </div>
 
-      <ul>
-        {labels.map((label, index) => (
-          <li key={index}>{label}</li>
-        ))}
-      </ul>
+        <div className="w-[80vw] h-[80vh] border-2">f</div>
+
+        <Button onClick={fetchLabels} disabled={loading}>
+          {loading ? "Loading..." : "Submit Images"}
+        </Button>
+
+        <ul>
+          {labels.map((label, index) => (
+            <li key={index}>{label}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
