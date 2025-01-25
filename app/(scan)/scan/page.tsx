@@ -1,5 +1,4 @@
 "use client";
-// In a React component (for example, pages/index.js)
 import { useState } from "react";
 
 export default function Home() {
