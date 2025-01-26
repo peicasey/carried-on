@@ -8,27 +8,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const [labels, setLabels] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
 
   const router = useRouter();
-
-  const fetchLabels = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/vision", {
-        method: "POST",
-      });
-
-      const data = await response.json();
-      setLabels(data.labels || []);
-    } catch (error) {
-      console.error("Error fetching labels:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="w-[100vw] min-h-[100vh] p-10 flex justify-center">
@@ -49,18 +31,6 @@ export default function Page() {
             Have more questions?
           </Button>
         )}
-
-        {/* google image api.. TODO */}
-
-        {/* <Button onClick={fetchLabels} disabled={loading}>
-          {loading ? "Loading..." : "Submit Images"}
-        </Button> */}
-
-        {/* <ul>
-          {labels.map((label, index) => (
-            <li key={index}>{label}</li>
-          ))}
-        </ul> */}
       </div>
     </div>
   );

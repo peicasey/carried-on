@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { analyzeImage } from "@/lib/actions";
 import { Camera, LoaderCircle, Sparkles } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "./ui/card";
+import { ItemList } from "./item-list";
 
 const test = `{
     "total": 25,
@@ -258,6 +261,36 @@ export function ImageUploader({ analysis, setAnalysis }: Props) {
     }
   };
 
+  const [labels, setLabels] = useState<string[]>([]);
+  const [newItem, setNewItem] = useState("");
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+
+  // isLoading = openai, loading = google image
+  const [loading, setLoading] = useState(false);
+
+  const fetchLabels = async () => {
+    console.log(imageURL);
+    if (imageURL) {
+      setLoading(true);
+      try {
+        const response = await fetch("/api/vision", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ imageURL }), // Pass imageUrl in the request body
+        });
+
+        const data = await response.json();
+        setLabels(data.labels || []);
+      } catch (error) {
+        console.error("Error fetching labels:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="space-y-4 h-full">
       <div className="w-full flex gap-4 justify-between">
@@ -315,16 +348,66 @@ export function ImageUploader({ analysis, setAnalysis }: Props) {
               />
             </div>
           )}
-          <Button
-            onClick={handleAnalyze}
-            disabled={!image || isLoading}
-            size="lg"
-            className=""
-          >
-            <Sparkles /> {isLoading ? "Analyzing..." : "Analyze Image"}
-          </Button>
         </div>
       )}
+
+      <Card>
+        <CardContent className="pt-4">
+          <Tabs defaultValue="openai" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="openai">Analyze Image</TabsTrigger>
+              <TabsTrigger value="google">Convert To List</TabsTrigger>
+            </TabsList>
+            <TabsContent
+              value="openai"
+              className="flex items-center gap-2 flex-col w-full"
+            >
+              <Button
+                onClick={handleAnalyze}
+                disabled={!image || isLoading}
+                size="lg"
+                className="w-full"
+              >
+                <Sparkles /> {isLoading ? "Analyzing..." : "Analyze Image"}
+              </Button>
+              {!image && (
+                <span className="text-xs">
+                  <i>Upload an image to begin.</i>
+                </span>
+              )}
+            </TabsContent>
+            <TabsContent
+              value="google"
+              className="flex items-center gap-2 flex-col w-full"
+            >
+              <Button
+                onClick={fetchLabels}
+                disabled={!image || loading}
+                size="lg"
+                className="w-full"
+              >
+                {loading ? "Loading..." : "Convert To List"}
+              </Button>
+              {!image && (
+                <span className="text-xs">
+                  <i>Upload an image to begin.</i>
+                </span>
+              )}
+
+              <ItemList
+                list={labels}
+                setList={setLabels}
+                newItem={newItem}
+                setNewItem={setNewItem}
+                editIndex={editIndex}
+                setEditIndex={setEditIndex}
+                analysis={analysis}
+                setAnalysis={setAnalysis}
+              />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
 
       {/* {analysis && (
         <div className="mt-4 p-4 bg-gray-100 rounded-md">

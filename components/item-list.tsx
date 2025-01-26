@@ -139,14 +139,29 @@ const test = `{
 }`;
 
 interface Props {
+  list: string[];
+  setList: any;
+  newItem: string;
+  setNewItem: any;
+  editIndex: number | null;
+  setEditIndex: any;
   analysis: string | null;
   setAnalysis: any;
 }
 
-export function ItemList({ analysis, setAnalysis }: Props) {
-  const [list, setList] = useState<string[]>([]);
-  const [newItem, setNewItem] = useState("");
-  const [editIndex, setEditIndex] = useState<number | null>(null);
+export function ItemList({
+  list,
+  setList,
+  newItem,
+  setNewItem,
+  editIndex,
+  setEditIndex,
+  analysis,
+  setAnalysis,
+}: Props) {
+  //   const [list, setList] = useState<string[]>([]);
+  //   const [newItem, setNewItem] = useState("");
+  //   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const addItem = () => {
