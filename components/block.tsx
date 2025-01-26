@@ -3,9 +3,9 @@ import type {
   ChatRequestOptions,
   CreateMessage,
   Message,
-} from 'ai';
-import { formatDistance } from 'date-fns';
-import { AnimatePresence, motion } from 'framer-motion';
+} from "ai";
+import { formatDistance } from "date-fns";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   type Dispatch,
   memo,
@@ -13,30 +13,30 @@ import {
   useCallback,
   useEffect,
   useState,
-} from 'react';
-import useSWR, { useSWRConfig } from 'swr';
-import { useDebounceCallback, useWindowSize } from 'usehooks-ts';
+} from "react";
+import useSWR, { useSWRConfig } from "swr";
+import { useDebounceCallback, useWindowSize } from "usehooks-ts";
 
-import type { Document, Suggestion, Vote } from '@/lib/db/schema';
-import { cn, fetcher } from '@/lib/utils';
+import type { Document, Suggestion, Vote } from "@/lib/db/schema";
+import { cn, fetcher } from "@/lib/utils";
 
-import { DiffView } from './diffview';
-import { DocumentSkeleton } from './document-skeleton';
-import { Editor } from './editor';
-import { MultimodalInput } from './multimodal-input';
-import { Toolbar } from './toolbar';
-import { VersionFooter } from './version-footer';
-import { BlockActions } from './block-actions';
-import { BlockCloseButton } from './block-close-button';
-import { BlockMessages } from './block-messages';
-import { CodeEditor } from './code-editor';
-import { Console } from './console';
-import { useSidebar } from './ui/sidebar';
-import { useBlock } from '@/hooks/use-block';
-import equal from 'fast-deep-equal';
-import { ImageEditor } from './image-editor';
+import { DiffView } from "./diffview";
+import { DocumentSkeleton } from "./document-skeleton";
+import { Editor } from "./editor";
+import { MultimodalInput } from "./multimodal-input";
+import { Toolbar } from "./toolbar";
+import { VersionFooter } from "./version-footer";
+import { BlockActions } from "./block-actions";
+import { BlockCloseButton } from "./block-close-button";
+import { BlockMessages } from "./block-messages";
+import { CodeEditor } from "./code-editor";
+import { Console } from "./console";
+import { useSidebar } from "./ui/sidebar";
+import { useBlock } from "@/hooks/use-block";
+import equal from "fast-deep-equal";
+import { ImageEditor } from "./image-editor";
 
-export type BlockKind = 'text' | 'code' | 'image';
+export type BlockKind = "text" | "code" | "image";
 
 export interface UIBlock {
   title: string;
@@ -44,7 +44,7 @@ export interface UIBlock {
   kind: BlockKind;
   content: string;
   isVisible: boolean;
-  status: 'streaming' | 'idle';
+  status: "streaming" | "idle";
   boundingBox: {
     top: number;
     left: number;
@@ -54,13 +54,13 @@ export interface UIBlock {
 }
 
 export interface ConsoleOutputContent {
-  type: 'text' | 'image';
+  type: "text" | "image";
   value: string;
 }
 
 export interface ConsoleOutput {
   id: string;
-  status: 'in_progress' | 'loading_packages' | 'completed' | 'failed';
+  status: "in_progress" | "loading_packages" | "completed" | "failed";
   contents: Array<ConsoleOutputContent>;
 }
 
@@ -92,16 +92,16 @@ function PureBlock({
   votes: Array<Vote> | undefined;
   append: (
     message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions,
+    chatRequestOptions?: ChatRequestOptions
   ) => Promise<string | null | undefined>;
   handleSubmit: (
     event?: {
       preventDefault?: () => void;
     },
-    chatRequestOptions?: ChatRequestOptions,
+    chatRequestOptions?: ChatRequestOptions
   ) => void;
   reload: (
-    chatRequestOptions?: ChatRequestOptions,
+    chatRequestOptions?: ChatRequestOptions
   ) => Promise<string | null | undefined>;
   isReadonly: boolean;
 }) {
@@ -112,27 +112,27 @@ function PureBlock({
     isLoading: isDocumentsFetching,
     mutate: mutateDocuments,
   } = useSWR<Array<Document>>(
-    block.documentId !== 'init' && block.status !== 'streaming'
+    block.documentId !== "init" && block.status !== "streaming"
       ? `/api/document?id=${block.documentId}`
       : null,
-    fetcher,
+    fetcher
   );
 
   const { data: suggestions } = useSWR<Array<Suggestion>>(
-    documents && block && block.status !== 'streaming'
+    documents && block && block.status !== "streaming"
       ? `/api/suggestions?documentId=${block.documentId}`
       : null,
     fetcher,
     {
       dedupingInterval: 5000,
-    },
+    }
   );
 
-  const [mode, setMode] = useState<'edit' | 'diff'>('edit');
+  const [mode, setMode] = useState<"edit" | "diff">("edit");
   const [document, setDocument] = useState<Document | null>(null);
   const [currentVersionIndex, setCurrentVersionIndex] = useState(-1);
   const [consoleOutputs, setConsoleOutputs] = useState<Array<ConsoleOutput>>(
-    [],
+    []
   );
 
   const { open: isSidebarOpen } = useSidebar();
@@ -146,7 +146,7 @@ function PureBlock({
         setCurrentVersionIndex(documents.length - 1);
         setBlock((currentBlock) => ({
           ...currentBlock,
-          content: mostRecentDocument.content ?? '',
+          content: mostRecentDocument.content ?? "",
         }));
       }
     }
@@ -177,7 +177,7 @@ function PureBlock({
 
           if (currentDocument.content !== updatedContent) {
             await fetch(`/api/document?id=${block.documentId}`, {
-              method: 'POST',
+              method: "POST",
               body: JSON.stringify({
                 title: block.title,
                 content: updatedContent,
@@ -197,15 +197,15 @@ function PureBlock({
           }
           return currentDocuments;
         },
-        { revalidate: false },
+        { revalidate: false }
       );
     },
-    [block, mutate],
+    [block, mutate]
   );
 
   const debouncedHandleContentChange = useDebounceCallback(
     handleContentChange,
-    2000,
+    2000
   );
 
   const saveContent = useCallback(
@@ -220,32 +220,32 @@ function PureBlock({
         }
       }
     },
-    [document, debouncedHandleContentChange, handleContentChange],
+    [document, debouncedHandleContentChange, handleContentChange]
   );
 
   function getDocumentContentById(index: number) {
-    if (!documents) return '';
-    if (!documents[index]) return '';
-    return documents[index].content ?? '';
+    if (!documents) return "";
+    if (!documents[index]) return "";
+    return documents[index].content ?? "";
   }
 
-  const handleVersionChange = (type: 'next' | 'prev' | 'toggle' | 'latest') => {
+  const handleVersionChange = (type: "next" | "prev" | "toggle" | "latest") => {
     if (!documents) return;
 
-    if (type === 'latest') {
+    if (type === "latest") {
       setCurrentVersionIndex(documents.length - 1);
-      setMode('edit');
+      setMode("edit");
     }
 
-    if (type === 'toggle') {
-      setMode((mode) => (mode === 'edit' ? 'diff' : 'edit'));
+    if (type === "toggle") {
+      setMode((mode) => (mode === "edit" ? "diff" : "edit"));
     }
 
-    if (type === 'prev') {
+    if (type === "prev") {
       if (currentVersionIndex > 0) {
         setCurrentVersionIndex((index) => index - 1);
       }
-    } else if (type === 'next') {
+    } else if (type === "next") {
       if (currentVersionIndex < documents.length - 1) {
         setCurrentVersionIndex((index) => index + 1);
       }
@@ -302,7 +302,7 @@ function PureBlock({
                 scale: 1,
                 transition: {
                   delay: 0.2,
-                  type: 'spring',
+                  type: "spring",
                   stiffness: 200,
                   damping: 30,
                 },
@@ -385,11 +385,11 @@ function PureBlock({
                     x: 0,
                     y: 0,
                     height: windowHeight,
-                    width: windowWidth ? windowWidth : 'calc(100dvw)',
+                    width: windowWidth ? windowWidth : "calc(100dvw)",
                     borderRadius: 0,
                     transition: {
                       delay: 0,
-                      type: 'spring',
+                      type: "spring",
                       stiffness: 200,
                       damping: 30,
                       duration: 5000,
@@ -402,11 +402,11 @@ function PureBlock({
                     height: windowHeight,
                     width: windowWidth
                       ? windowWidth - 400
-                      : 'calc(100dvw-400px)',
+                      : "calc(100dvw-400px)",
                     borderRadius: 0,
                     transition: {
                       delay: 0,
-                      type: 'spring',
+                      type: "spring",
                       stiffness: 200,
                       damping: 30,
                       duration: 5000,
@@ -418,7 +418,7 @@ function PureBlock({
               scale: 0.5,
               transition: {
                 delay: 0.1,
-                type: 'spring',
+                type: "spring",
                 stiffness: 600,
                 damping: 30,
               },
@@ -442,7 +442,7 @@ function PureBlock({
                         new Date(),
                         {
                           addSuffix: true,
-                        },
+                        }
                       )}`}
                     </div>
                   ) : (
@@ -463,22 +463,22 @@ function PureBlock({
 
             <div
               className={cn(
-                'dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full pb-40 items-center',
+                "dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full pb-40 items-center",
                 {
-                  'py-2 px-2': block.kind === 'code',
-                  'py-8 md:p-20 px-4': block.kind === 'text',
-                },
+                  "py-2 px-2": block.kind === "code",
+                  "py-8 md:p-20 px-4": block.kind === "text",
+                }
               )}
             >
               <div
-                className={cn('flex flex-row', {
-                  '': block.kind === 'code',
-                  'mx-auto max-w-[600px]': block.kind === 'text',
+                className={cn("flex flex-row", {
+                  "": block.kind === "code",
+                  "mx-auto max-w-[600px]": block.kind === "text",
                 })}
               >
                 {isDocumentsFetching && !block.content ? (
                   <DocumentSkeleton blockKind={block.kind} />
-                ) : block.kind === 'code' ? (
+                ) : block.kind === "code" ? (
                   <CodeEditor
                     content={
                       isCurrentVersion
@@ -491,8 +491,8 @@ function PureBlock({
                     status={block.status}
                     saveContent={saveContent}
                   />
-                ) : block.kind === 'text' ? (
-                  mode === 'edit' ? (
+                ) : block.kind === "text" ? (
+                  mode === "edit" ? (
                     <Editor
                       content={
                         isCurrentVersion
@@ -503,17 +503,17 @@ function PureBlock({
                       currentVersionIndex={currentVersionIndex}
                       status={block.status}
                       saveContent={saveContent}
-                      suggestions={isCurrentVersion ? (suggestions ?? []) : []}
+                      suggestions={isCurrentVersion ? suggestions ?? [] : []}
                     />
                   ) : (
                     <DiffView
                       oldContent={getDocumentContentById(
-                        currentVersionIndex - 1,
+                        currentVersionIndex - 1
                       )}
                       newContent={getDocumentContentById(currentVersionIndex)}
                     />
                   )
-                ) : block.kind === 'image' ? (
+                ) : block.kind === "image" ? (
                   <ImageEditor
                     title={block.title}
                     content={
