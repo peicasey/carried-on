@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [analysis, setAnalysis] = useState<string | null>(null);
+
   const router = useRouter();
 
   return (

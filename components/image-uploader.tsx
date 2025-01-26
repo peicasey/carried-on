@@ -8,6 +8,7 @@ import { analyzeImage } from "@/lib/actions";
 import { Camera, LoaderCircle, Sparkles } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "./ui/card";
+import { ItemList } from "./item-list";
 
 const test = `{
     "total": 25,
@@ -260,7 +261,10 @@ export function ImageUploader({ analysis, setAnalysis }: Props) {
     }
   };
 
-  const [labels, setLabels] = useState([]);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [newItem, setNewItem] = useState("");
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+
   // isLoading = openai, loading = google image
   const [loading, setLoading] = useState(false);
 
@@ -390,11 +394,16 @@ export function ImageUploader({ analysis, setAnalysis }: Props) {
                 </span>
               )}
 
-              <ul>
-                {labels.map((label, index) => (
-                  <li key={index}>{label}</li>
-                ))}
-              </ul>
+              <ItemList
+                list={labels}
+                setList={setLabels}
+                newItem={newItem}
+                setNewItem={setNewItem}
+                editIndex={editIndex}
+                setEditIndex={setEditIndex}
+                analysis={analysis}
+                setAnalysis={setAnalysis}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
