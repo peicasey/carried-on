@@ -8,18 +8,77 @@ import { analyzeImage } from "@/lib/actions";
 
 export function ImageUploader() {
   const [image, setImage] = useState<string | null>(null);
+  const [imageURL, setImageURL] = useState<string | null>(null);
   const [showWebcam, setShowWebcam] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const webcamRef = useRef<Webcam>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  async function imageUrlToBlob(imageUrl: string): Promise<Blob | null> {
+    try {
+      const response = await fetch(imageUrl);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch image");
+      }
+
+      const imageBlob = await response.blob();
+
+      return imageBlob;
+    } catch (error) {
+      console.error("Error converting image URL to Blob:", error);
+      return null;
+    }
+  }
+
+  async function uploadImage() {
+    try {
+      const imageBlob = await imageUrlToBlob(image ?? "");
+
+      // Prepare the FormData object with the image Blob
+      const formData = new FormData();
+      if (imageBlob !== null) {
+        formData.append("file", imageBlob, "camera_item.jpg"); // You can adjust the file name as needed
+      }
+
+      // Send the request to the upload endpoint
+      const uploadResponse = await fetch("/api/files/upload", {
+        method: "POST",
+        body: formData,
+        headers: {
+          // Add any necessary headers here, like authorization tokens if needed
+          // 'Authorization': 'Bearer your_token', // if authentication is required
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
+        console.error("Upload failed:", errorData.error);
+        return null;
+      }
+
+      const uploadData = await uploadResponse.json();
+      console.log("Upload successful:", uploadData);
+      setImageURL(uploadData.url);
+      console.log(imageURL);
+      console.log(uploadData.url);
+      return uploadData; // The response data (e.g., file URL or metadata)
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null;
+    }
+  }
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => setImage(e.target?.result as string);
       reader.readAsDataURL(file);
+      uploadImage();
     }
   };
 
@@ -32,10 +91,11 @@ export function ImageUploader() {
   };
 
   const handleAnalyze = async () => {
-    if (image) {
+    console.log(imageURL);
+    if (imageURL) {
       setIsLoading(true);
       try {
-        const result = await analyzeImage(image);
+        const result = await analyzeImage(imageURL);
         setAnalysis(result);
       } catch (error) {
         console.error("Error analyzing image:", error);

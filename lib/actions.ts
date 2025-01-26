@@ -5,6 +5,7 @@ import { customModel } from "./ai";
 
 export async function analyzeImage(imageUrl: string) {
   try {
+    // console.log("helllloooo?");
     console.log("Analyzing image URL:", imageUrl);
 
     if (!process.env.OPENAI_API_KEY) {
@@ -16,19 +17,12 @@ export async function analyzeImage(imageUrl: string) {
       messages: [
         {
           role: "user",
-          content: [
+          content: "can you tell me what is in this image?",
+          experimental_attachments: [
             {
-              type: "text",
-              text: "What items are in this photo and do they comply with TSA guidelines?",
-            },
-            {
-              type: "image",
-              image: imageUrl,
-
-              // OpenAI specific extension - image detail:
-              experimental_providerMetadata: {
-                openai: { imageDetail: "low" },
-              },
+              url: imageUrl,
+              name: "test-packing.jpeg",
+              contentType: "image/jpeg",
             },
           ],
         },
