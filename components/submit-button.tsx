@@ -20,7 +20,7 @@ export function SubmitButton({
       type={pending ? 'button' : 'submit'}
       aria-disabled={pending || isSuccessful}
       disabled={pending || isSuccessful}
-      className="relative"
+      className="relative hover:shadow-md duration-500 dark:hover:bg-[#00378f] dark:hover:text-[#FFFFFF]"
     >
       {children}
 

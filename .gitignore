@@ -37,4 +37,7 @@ yarn-error.log*
 .vscode
 .env*.local
 
+.vercel
+.env*.local
+
 service-acct-file.json
