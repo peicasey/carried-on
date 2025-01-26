@@ -1,15 +1,19 @@
 "use client";
+
 import FancyList from "@/components/fancy-list";
 import { ImageUploader } from "@/components/image-uploader";
 import { ItemList } from "@/components/item-list";
 import { Button } from "@/components/ui/button";
 import { InfoIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Page() {
   const [labels, setLabels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const fetchLabels = async () => {
     setLoading(true);
@@ -40,6 +44,10 @@ export default function Page() {
         <ItemList analysis={analysis} setAnalysis={setAnalysis} />
 
         {analysis && <FancyList jsonString={analysis}></FancyList>}
+
+        <Button onClick={() => router.push("/chat")}>
+          Have more questions?
+        </Button>
       </div>
     </div>
   );
