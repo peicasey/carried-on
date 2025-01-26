@@ -244,7 +244,7 @@ export function ItemList({ analysis, setAnalysis }: Props) {
         onClick={handleAnalyze}
         disabled={list.length == 0 || isLoading}
         size="lg"
-        className=""
+        className="w-full mb-4"
       >
         <Sparkles /> {isLoading ? "Analyzing..." : "Analyze List"}
       </Button>
