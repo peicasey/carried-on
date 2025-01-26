@@ -3,6 +3,24 @@
 import { customModel } from "@/lib/ai";
 import { generateText } from "ai";
 
+const prompt = `. i need each item to be classified with the following output. no extraneous outputs such as "Here is the result" only provide the direct text that I am asking for.
+
+Below is the strict format for you to follow.
+
+{
+    "total": int,
+    "valid": int,
+    "items": [
+        {
+            "item_name": string,
+            "isValid": bool,
+            "desc": string
+        }
+    ]
+ }
+
+i need this to be strictly based on TSA guidelines, if it can't fly nationally, just say it cant fly`;
+
 function convertArrayToCommaSeparatedList(items: string[]): string {
   return items.join(", ");
 }
@@ -21,8 +39,9 @@ export async function analyzeList(items: string[]) {
         {
           role: "user",
           content:
-            "Can you say yes or no, and explain why each of the following items are appropriate given TSA guidelines? Items: " +
-            item_list,
+            "This is a list of items of items I'm planning on bringing on the plane: " +
+            item_list +
+            prompt,
         },
       ],
     });

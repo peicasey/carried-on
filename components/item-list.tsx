@@ -6,11 +6,147 @@ import { Input } from "@/components/ui/input";
 import { Trash2, Edit2, Plus, Sparkles } from "lucide-react";
 import { analyzeList } from "@/app/(list)/actions";
 
-export function ItemList() {
+const test = `{
+    "total": 25,
+    "valid": 21,
+    "items": [
+        {
+            "item_name": "Propane Canisters",
+            "isValid": false,
+            "desc": "Cannot fly due to TSA restrictions on compressed gas cylinders."
+        },
+        {
+            "item_name": "Microfiber Towel",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Portable Camping Stove",
+            "isValid": false,
+            "desc": "Cannot fly with fuel; stove is allowed if clean of residue."
+        },
+        {
+            "item_name": "Kettle",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Duffel Bag",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Power Bank",
+            "isValid": true,
+            "desc": "Allowed if under 100Wh and carried in carry-on luggage."
+        },
+        {
+            "item_name": "Daypack",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Coleman Stove",
+            "isValid": false,
+            "desc": "Cannot fly with fuel; stove is allowed if clean of residue."
+        },
+        {
+            "item_name": "Aeropress Coffee Maker",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Hydro Flask Bottle",
+            "isValid": true,
+            "desc": "Allowed if empty."
+        },
+        {
+            "item_name": "Travel Alarm Clock",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Black Diamond Headlamp",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Flashlight",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Clothes (Shirts, Pants, Socks)",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Waterproof Notebook",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Silicone Food Containers",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Reusable Utensils",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Travel Toiletries",
+            "isValid": true,
+            "desc": "Allowed if liquids are under 3.4oz and packed in a quart-sized bag."
+        },
+        {
+            "item_name": "Carabiners",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Small Multi-tool",
+            "isValid": false,
+            "desc": "Cannot fly due to blade or sharp component restrictions."
+        },
+        {
+            "item_name": "Camping Lantern",
+            "isValid": true,
+            "desc": "Allowed if battery-powered and batteries are carried on."
+        },
+        {
+            "item_name": "Travel Organizer Case",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Clothing Compression Bag",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "The North Face Backpack",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        },
+        {
+            "item_name": "Marker Pen",
+            "isValid": true,
+            "desc": "Allowed on flights."
+        }
+    ]
+}`;
+
+interface Props {
+  analysis: string | null;
+  setAnalysis: any;
+}
+
+export function ItemList({ analysis, setAnalysis }: Props) {
   const [list, setList] = useState<string[]>([]);
   const [newItem, setNewItem] = useState("");
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [analysis, setAnalysis] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const addItem = () => {
@@ -43,8 +179,10 @@ export function ItemList() {
     if (list) {
       setIsLoading(true);
       try {
-        const result = await analyzeList(list);
-        setAnalysis(result);
+        // CHANGE ONCE API WORKING AGAIN; TODO
+        // const result = await analyzeList(list);
+        // setAnalysis(result);
+        setAnalysis(test); // <-- CHANGE THIS TO result
       } catch (error) {
         console.error("Error analyzing list:", error);
         setAnalysis("An error occurred while analyzing the image.");
@@ -112,12 +250,12 @@ export function ItemList() {
         <Sparkles /> {isLoading ? "Analyzing..." : "Analyze List"}
       </Button>
 
-      {analysis && (
+      {/* {analysis && (
         <div className="mt-4 p-4 bg-gray-100 rounded-md">
           <h3 className="font-semibold mb-2">Analysis Result:</h3>
           <p>{analysis}</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
