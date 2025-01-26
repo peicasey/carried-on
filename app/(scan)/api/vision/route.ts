@@ -4,10 +4,20 @@ export async function POST(req: Request) {
   try {
     const client = new ImageAnnotatorClient();
 
-    const imagePath =
-      "https://cloud.google.com/vision/docs/images/bicycle_example.png"; // Path to your local image (ensure this file exists)
+    // Read the body as plain text and then parse it as JSON
+    const body = await req.text();
+    const { imageURL } = JSON.parse(body);
+    console.log(JSON.parse(body));
 
-    const [result] = await client.labelDetection(imagePath);
+    if (!imageURL) {
+      return new Response(JSON.stringify({ error: "No image URL provided." }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Perform label detection on the image from the provided URL
+    const [result] = await client.labelDetection(imageURL);
     const labels = result.labelAnnotations;
 
     return new Response(
