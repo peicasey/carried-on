@@ -5,6 +5,7 @@ import Webcam from "react-webcam";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { analyzeImage } from "@/lib/actions";
+import { Camera, LoaderCircle, Sparkles } from "lucide-react";
 
 export function ImageUploader() {
   const [image, setImage] = useState<string | null>(null);
@@ -73,6 +74,7 @@ export function ImageUploader() {
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    setShowWebcam(false);
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -106,40 +108,73 @@ export function ImageUploader() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full">
+      <div className="w-full flex gap-4 justify-between">
+        <Button
+          onClick={() => setShowWebcam(true)}
+          size="icon"
+          disabled={showWebcam}
+          className="px-4"
+        >
+          <Camera />
+        </Button>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={handleFileUpload}
+          ref={fileInputRef}
+          className="hover:cursor-pointer text-sm"
+        />
+      </div>
       {showWebcam ? (
-        <div className="space-y-2">
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            className="w-full"
-          />
-          <Button onClick={captureWebcam}>Capture Photo</Button>
+        <div className="w-full space-y-4">
+          <div className="flex items-center justify-center w-[calc(100vw-5rem)] h-[calc(75vw-5rem)] rounded-md z-10 absolute overflow-hidden">
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              classID="w-full"
+            />
+          </div>
+          <div className="bg-neutral-300 dark:bg-neutral-600 rounded-md flex items-center justify-center w-[calc(100vw-5rem)] h-[calc(75vw-5rem)] z-[-2]">
+            <LoaderCircle className="animate-spin" />
+          </div>
+          <div className="w-full flex items-center justify-center">
+            <Button onClick={captureWebcam}>
+              <Camera /> Capture Photo
+            </Button>
+          </div>
         </div>
       ) : (
-        <div className="space-y-2">
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={handleFileUpload}
-            ref={fileInputRef}
-          />
-          <Button onClick={() => setShowWebcam(true)}>Use Webcam</Button>
-        </div>
-      )}
-      {image && (
-        <div className="space-y-2">
-          <img
-            src={image || "/placeholder.svg"}
-            alt="Uploaded"
-            className="max-w-full h-auto"
-          />
-          <Button onClick={handleAnalyze} disabled={isLoading}>
-            {isLoading ? "Analyzing..." : "Analyze Image"}
+        <div className="w-full flex flex-col items-center gap-4">
+          {image ? (
+            <div className="flex items-center justify-center rounded-md w-[calc(100vw-5rem)] h-[calc(75vw-5rem)] overflow-hidden">
+              <img
+                src={image || "/placeholder.png"}
+                alt="Uploaded"
+                className="max-w-full h-auto rounded-md"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center rounded-md w-[calc(100vw-5rem)] h-[calc(75vw-5rem)] overflow-hidden">
+              <img
+                src="/placeholder.png"
+                alt="Uploaded"
+                className="max-w-full h-auto rounded-md"
+              />
+            </div>
+          )}
+          <Button
+            onClick={handleAnalyze}
+            disabled={!image || isLoading}
+            size="lg"
+            className="hover:bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% duraton-500"
+          >
+            <Sparkles /> {isLoading ? "Analyzing..." : "Analyze Image"}
           </Button>
         </div>
       )}
+
       {analysis && (
         <div className="mt-4 p-4 bg-gray-100 rounded-md">
           <h3 className="font-semibold mb-2">Analysis Result:</h3>
