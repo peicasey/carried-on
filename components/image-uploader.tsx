@@ -33,9 +33,9 @@ export function ImageUploader() {
     }
   }
 
-  async function uploadImage() {
+  async function uploadImage(imageUrl: string) {
     try {
-      const imageBlob = await imageUrlToBlob(image ?? "");
+      const imageBlob = await imageUrlToBlob(imageUrl ?? "");
 
       // Prepare the FormData object with the image Blob
       const formData = new FormData();
@@ -74,21 +74,35 @@ export function ImageUploader() {
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setShowWebcam(false);
+    setShowWebcam(false); // Hides the webcam interface (if used)
+
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => setImage(e.target?.result as string);
+
+      // Read the file as Data URL
+      reader.onload = async (e) => {
+        const imageUrl = e.target?.result as string; // This is the base64-encoded image
+
+        // Update the image state after reading the file
+        setImage(imageUrl);
+
+        // Now that image has been set, proceed with uploading
+        const uploadData = await uploadImage(imageUrl);
+        // Handle the uploaded data if needed, e.g., updating UI
+      };
+
+      // Start reading the file
       reader.readAsDataURL(file);
-      uploadImage();
     }
   };
 
-  const captureWebcam = () => {
+  const captureWebcam = async () => {
     const imageSrc = webcamRef.current?.getScreenshot();
     if (imageSrc) {
       setImage(imageSrc);
       setShowWebcam(false);
+      const uploadData = await uploadImage(imageSrc);
     }
   };
 
