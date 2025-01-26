@@ -180,9 +180,8 @@ export function ItemList({ analysis, setAnalysis }: Props) {
       setIsLoading(true);
       try {
         // CHANGE ONCE API WORKING AGAIN; TODO
-        // const result = await analyzeList(list);
-        // setAnalysis(result);
-        setAnalysis(test); // <-- CHANGE THIS TO result
+        const result = await analyzeList(list);
+        setAnalysis(result); // <-- CHANGE THIS TO result
       } catch (error) {
         console.error("Error analyzing list:", error);
         setAnalysis("An error occurred while analyzing the image.");
@@ -245,7 +244,7 @@ export function ItemList({ analysis, setAnalysis }: Props) {
         onClick={handleAnalyze}
         disabled={list.length == 0 || isLoading}
         size="lg"
-        className=""
+        className="w-full mb-4"
       >
         <Sparkles /> {isLoading ? "Analyzing..." : "Analyze List"}
       </Button>

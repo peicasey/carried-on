@@ -1,14 +1,18 @@
 "use client";
+
 import FancyList from "@/components/fancy-list";
 import { ImageUploader } from "@/components/image-uploader";
 import { Button } from "@/components/ui/button";
 import { InfoIcon } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [labels, setLabels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const fetchLabels = async () => {
     setLoading(true);
@@ -39,6 +43,12 @@ export default function Page() {
         <ImageUploader analysis={analysis} setAnalysis={setAnalysis} />
 
         {analysis && <FancyList jsonString={analysis}></FancyList>}
+
+        {analysis && (
+          <Button onClick={() => router.push("/chat")}>
+            Have more questions?
+          </Button>
+        )}
 
         {/* google image api.. TODO */}
 

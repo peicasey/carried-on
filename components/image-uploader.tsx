@@ -248,8 +248,8 @@ export function ImageUploader({ analysis, setAnalysis }: Props) {
       setIsLoading(true);
       try {
         // CHANGE ONCE API WORKING AGAIN; TODO
-        // const result = await analyzeImage(imageURL);
-        setAnalysis(test); // <-- CHANGE THIS TO result
+        const result = await analyzeImage(imageURL);
+        setAnalysis(result); // <-- CHANGE THIS TO result
       } catch (error) {
         console.error("Error analyzing image:", error);
         setAnalysis("An error occurred while analyzing the image.");
