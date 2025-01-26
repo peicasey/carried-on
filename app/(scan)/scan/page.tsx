@@ -1,4 +1,5 @@
 "use client";
+import { Camera } from "@/components/camera";
 import { Button } from "@/components/ui/button";
 import { InfoIcon } from "lucide-react";
 import { useState } from "react";
@@ -33,7 +34,7 @@ export default function Page() {
           </Button>
         </div>
 
-        <div className="w-[80vw] h-[80vh] border-2">f</div>
+        <Camera />
 
         <Button onClick={fetchLabels} disabled={loading}>
           {loading ? "Loading..." : "Submit Images"}
