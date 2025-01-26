@@ -45,9 +45,11 @@ export default function Page() {
 
         {analysis && <FancyList jsonString={analysis}></FancyList>}
 
-        <Button onClick={() => router.push("/chat")}>
-          Have more questions?
-        </Button>
+        {analysis && (
+          <Button onClick={() => router.push("/chat")}>
+            Have more questions?
+          </Button>
+        )}
       </div>
     </div>
   );
