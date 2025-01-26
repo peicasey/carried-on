@@ -3,6 +3,24 @@
 import { generateText } from "ai";
 import { customModel } from "./ai";
 
+const prompt = `i need each item that you see in this image to be classified with the following output. no extraneous outputs such as "Here is the result" only provide the direct text that I am asking for.
+
+Below is the strict format for you to follow.
+
+{
+    "total": int,
+    "valid": int,
+    "items": [
+        {
+            "item_name": string,
+            "isValid": bool,
+            "desc": string
+        }
+    ]
+ }
+
+i need this to be strictly based on TSA guidelines, if it can't fly nationally, just say it cant fly`;
+
 export async function analyzeImage(imageUrl: string) {
   try {
     // console.log("helllloooo?");
@@ -17,7 +35,7 @@ export async function analyzeImage(imageUrl: string) {
       messages: [
         {
           role: "user",
-          content: "can you tell me what is in this image?",
+          content: prompt,
           experimental_attachments: [
             {
               url: imageUrl,
