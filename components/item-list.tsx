@@ -231,9 +231,9 @@ export function ItemList({
         {list.map((item, index) => (
           <li
             key={index}
-            className="flex items-center justify-between bg-gray-100 p-2 rounded"
+            className="flex items-center justify-between p-2 rounded bg-gray-100 dark:bg-gray-900"
           >
-            <span>{item}</span>
+            <span className="dark:text-white text-black">{item}</span>
             <div>
               <Button
                 variant="ghost"
