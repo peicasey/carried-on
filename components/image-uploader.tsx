@@ -182,7 +182,7 @@ export function ImageUploader() {
             onClick={handleAnalyze}
             disabled={!image || isLoading}
             size="lg"
-            className="hover:bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% duraton-500"
+            className=""
           >
             <Sparkles /> {isLoading ? "Analyzing..." : "Analyze Image"}
           </Button>
