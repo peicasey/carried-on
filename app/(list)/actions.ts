@@ -35,15 +35,10 @@ export async function analyzeList(items: string[]) {
 
     const result = await generateText({
       model: customModel("gpt-4o-mini"),
-      messages: [
-        {
-          role: "user",
-          content:
-            "This is a list of items of items I'm planning on bringing on the plane: " +
-            item_list +
-            prompt,
-        },
-      ],
+      prompt:
+        "This is a list of items of items I'm planning on bringing on the plane: " +
+        item_list +
+        prompt,
     });
 
     console.log("API Response:", result.text);
