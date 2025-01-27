@@ -20,8 +20,16 @@
 ## ✨ What is *Carried On*?
 > *Carried On* provides a website platform where travelers can upload images of their luggage, and our AI system, powered by OpenAI's GPT-4o, detects the items inside. With this, users can receive packing suggestions and guidance based on TSA Guidelines, while also benefiting from an AI chatbot that helps answer questions and navigate nuances of TSA regulations, and more.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b47efd91-2aba-4459-a70c-0ff48bae3410" />
+</p>
+
 ## ⚒️ How we built it
 > We built *Carried On* using **Next.js**, a framework for creating server-rendered React websites, **Tailwind CSS**, a CSS framework with many pre-designed utility classes that can be used to build robust UIs, **Auth0**, an identity and access management (IAM) platform used for authentication and authorization, **.Tech Domains**, **OpenAI API** for robust image detection and chatbot functionality, **Arize Phoenix** for monitoring and optimization of our AI-driven application, **TypeScript** for static typing in JavaScript, and **Vercel**, a cloud platform for deploying web applications.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1d895c5d-074a-4921-a2c9-7556721a29f7" width=800 />
+</p>
 
 ## 💢 Challenging moments
 > When using **Google Cloud Vision API**, we had challenges with accurately detecting and classifying items within luggage, especially with complex or partially obscured items, inspiring a switch to OpenAI's built-in Image Recognition capabiliites with GPT-4o. Additionally, integrating **OpenAI API** for chatbot functionality alongside utilizing live image detection required careful synchronization to ensure that the system could seamlessly provide relevant packing suggestions based on the detected items. We had a moment near 6am where all of the OpenAI API Credits that were provided to hackers got maxed out, hindering our development a bit. We decided to use ChatGPT to predict outputs and hold out on purchasing more credits to complete our project in the morning!
